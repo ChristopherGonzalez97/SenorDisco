@@ -1,0 +1,1351 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Coberturas",
+        "description": "GeoReference REST API",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://testservices.wschilexpress.com/georeference"
+        },
+        {
+            "url": "https://testservices.wschilexpress.com/georeference"
+        }
+    ],
+    "paths": {
+        "/api/v{version}/addresses/georeference": {
+            "post": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Georeferenciar una dirección",
+                "description": "Permite consultar las coordenadas de una dirección. ",
+                "operationId": "ValidateAddress",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DefinitionRequestGeoreference"
+                            },
+                            "example": {
+                                "countyName": "Providencia",
+                                "streetName": "Avenida providencia",
+                                "number": "1245"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseGeoreference"
+                                },
+                                "example": {
+                                    "data": {
+                                        "addressId": 53988441,
+                                        "latitude": "-33.41217020",
+                                        "longitude": "-70.57973480"
+                                    },
+                                    "statusCode": 0,
+                                    "statusDescription": "Extraccion exitosa",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/"
+                                },
+                                "example": {
+                                    "statusCode": 90,
+                                    "statusDescription": "El JSON de entrada no es válido",
+                                    "errors": [
+                                        "Unterminated string. Expected delimiter: \". Path 'streetName', line 7, position 0."
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/coverage-areas": {
+            "get": {
+                "tags": [
+                    "CoverageAreas"
+                ],
+                "summary": "Consultar Coberturas",
+                "description": "Entrega un listado con las coberturas disponibles.",
+                "operationId": "CoverageAreas",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    },
+                    {
+                        "name": "RegionCode",
+                        "in": "query",
+                        "description": "Código de región obtenido de la API Consultar Regiones",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "RM"
+                            ],
+                            "type": "string",
+                            "default": "RM"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Código de tipo de cobertura \n0=Todas / 1= Comunas / 2= Sectores dentro de una comuna",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                0
+                            ],
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseCoverageArea"
+                                },
+                                "example": {
+                                    "coverageAreas": [
+                                        {
+                                            "countyCode": "BULN",
+                                            "countyName": "BULNES",
+                                            "regionCode": "R16",
+                                            "ineCountyCode": 425,
+                                            "queryMode": 1,
+                                            "coverageName": "BULNES"
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "Extraccion exitosa",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "coverageAreas": [],
+                                    "statusCode": -1,
+                                    "statusDescription": "No se encontró información",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/nearby-offices/{addressId}": {
+            "get": {
+                "tags": [
+                    "NearbyOffices"
+                ],
+                "summary": "Oficinas cercanas",
+                "description": "Permite identificar las oficinas cercanas a una determinada dirección.",
+                "operationId": "NearbyOffices",
+                "parameters": [
+                    {
+                        "name": "addressId",
+                        "in": "path",
+                        "description": "Código de la dirección desde la cual se desea buscar oficinas cercanas, obtenido mediante la operación Georeferenciar una Dirección\n",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Código de tipo de oficina; 0 = Sucursales propias / 4 = Tiendas Pick Up",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "description": "Radio de búsqueda de oficinas en kilómetros (valores enteros)",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseNearbyOffice"
+                                },
+                                "example": {
+                                    "nearbyOffice": [
+                                        {
+                                            "distance": "566.31",
+                                            "office": {
+                                                "regionName": "TARAPACA",
+                                                "countyName": "ALTO HOSPICIO",
+                                                "officeName": "ALTO HOSPICIO",
+                                                "officeType": 3,
+                                                "streetName": "AVENIDA LOS CONDORES",
+                                                "streetNumber": 3883,
+                                                "complement": "AVENIDA LOS CONDORES  3883 ",
+                                                "addressId": 202624,
+                                                "latitude": "-20.27504000",
+                                                "longitude": "-70.09599000",
+                                                "streetNameId": 103029,
+                                                "ineCountyId": 998,
+                                                "managerName": "JENNY ALVAREZ",
+                                                "telephone": "0",
+                                                "businessHour": [
+                                                    {
+                                                        "day": "Lunes",
+                                                        "initialStartHour": "2020-11-30T09:00:00.0000000+00:00",
+                                                        "initialEndHour": "2020-11-30T14:00:00.0000000+00:00",
+                                                        "finalStartHour": "2020-11-30T16:00:00.0000000+00:00",
+                                                        "finalEndHour": "2020-11-30T18:10:00.0000000+00:00"
+                                                    }
+                                                ],
+                                                "officeServices": [
+                                                    {
+                                                        "serviceDescription": "EnviosEntrega",
+                                                        "serviceTypeCode": 1,
+                                                        "serviceStatusCode": 1
+                                                    }
+                                                ],
+                                                "officeCode": 847,
+                                                "regionCode": "R1",
+                                                "eMail": ""
+                                            }
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "Extraccion exitosa",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "nearbyOffice": [],
+                                    "statusCode": -1,
+                                    "statusDescription": "No se encontró información",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/offices": {
+            "get": {
+                "tags": [
+                    "Offices"
+                ],
+                "summary": "Oficinas de entrega",
+                "description": "Permite obtener toda la información para entregar tus productos en una oficina Chilexpress.\n",
+                "operationId": "GetOffices",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "in": "query",
+                        "description": "Código de tipo de oficina; 0 = Sucursales propias / 4 = Tiendas Pick Up",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                0
+                            ],
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "RegionCode",
+                        "in": "query",
+                        "description": "Código de región obtenido de la API Consultar regiones",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "CountyName",
+                        "in": "query",
+                        "description": "Nombre de la cobertura obtenido de la API Consultar Coberturas",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseOffice"
+                                },
+                                "example": {
+                                    "offices": [
+                                        {
+                                            "regionName": "MAGALLANES Y LA ANTARTICA CHILENA",
+                                            "countyName": "PUNTA ARENAS",
+                                            "officeName": "PUNTA ARENAS ESPANA",
+                                            "officeType": 3,
+                                            "streetName": "AVENIDA ESPANA",
+                                            "streetNumber": 1375,
+                                            "complement": "AVENIDA ESPANA  1375  LOC 10",
+                                            "addressId": 9157214,
+                                            "latitude": "-53.13880000",
+                                            "longitude": "-70.89053000",
+                                            "streetNameId": 41118,
+                                            "ineCountyId": 590,
+                                            "managerName": "ELIZABETH INOSTROZA",
+                                            "telephone": "61 2233308",
+                                            "businessHour": [
+                                                {
+                                                    "day": "Lunes",
+                                                    "initialStartHour": "2020-11-30T09:00:00.0000000+00:00",
+                                                    "initialEndHour": "2020-11-30T13:00:00.0000000+00:00",
+                                                    "finalStartHour": "2020-11-30T15:00:00.0000000+00:00",
+                                                    "finalEndHour": "2020-11-30T19:00:00.0000000+00:00"
+                                                }
+                                            ],
+                                            "officeServices": [
+                                                {
+                                                    "serviceDescription": "EnviosEntrega",
+                                                    "serviceTypeCode": 1,
+                                                    "serviceStatusCode": 1
+                                                }
+                                            ],
+                                            "officeCode": 653,
+                                            "regionCode": "R12",
+                                            "eMail": ""
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "Registro Exitoso",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/"
+                                },
+                                "example": {
+                                    "offices": [],
+                                    "statusCode": -1,
+                                    "statusDescription": "No existe una oficina asociada a esta comuna",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/regions": {
+            "get": {
+                "tags": [
+                    "Regions"
+                ],
+                "summary": "Consultar Regiones",
+                "description": "Entrega un listado de todas la regiones.",
+                "operationId": "GetRegions",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseRegions"
+                                },
+                                "example": {
+                                    "regions": [
+                                        {
+                                            "regionId": "R1",
+                                            "regionName": "TARAPACA",
+                                            "ineRegionCode": 1
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "Extraccion exitosa",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "statusCode": -1,
+                                    "statusDescription": "No se encontró información",
+                                    "regions": []
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/streets/search": {
+            "post": {
+                "tags": [
+                    "Streets"
+                ],
+                "summary": "Consultar Calles",
+                "description": "Entrega un listado con las calles existentes.",
+                "operationId": "Streets",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Cantidad de resultados máximo a mostrar",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DefinitionRequestStreet"
+                            },
+                            "example": {
+                                "countyName": "SANTIAGO CENTRO",
+                                "streetName": "DOCTOR ALLENDE PADIN",
+                                "pointsOfInterestEnabled": true,
+                                "streetNameEnabled": true,
+                                "roadType": 0
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseStreet"
+                                },
+                                "example": {
+                                    "streets": [
+                                        {
+                                            "streetId": 45473,
+                                            "streetName": "DOCTOR ALLENDE PADIN",
+                                            "countyName": "SANTIAGO CENTRO",
+                                            "roadType": "CALLE"
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "Exito",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "statusCode": 90,
+                                    "statusDescription": "El JSON de entrada no es válido",
+                                    "errors": [
+                                        "Unterminated string. Expected delimiter: \". Path 'pointsOfInterestEnabled', line 6, position 1."
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v{version}/streets/{streetNameId}/numbers": {
+            "get": {
+                "tags": [
+                    "Streets"
+                ],
+                "summary": "Consultar Numeraciones",
+                "description": "Entrega un listado con las numeraciones existentes para una calle.",
+                "operationId": "StreetNumbers",
+                "parameters": [
+                    {
+                        "name": "streetNameId",
+                        "in": "path",
+                        "description": "Código de calle obtenido de la API consultar calles",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Versión actual de la API 1.0",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "1.0"
+                            ],
+                            "type": "string",
+                            "default": "1.0"
+                        }
+                    },
+                    {
+                        "name": "streetNumber",
+                        "in": "query",
+                        "description": "Número de la calle",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResponseStreetNumbers"
+                                },
+                                "example": {
+                                    "streetNumbers": [
+                                        {
+                                            "number": 27,
+                                            "latitude": -33.44389969,
+                                            "longitude": -70.65284962,
+                                            "addressId": 18067542
+                                        }
+                                    ],
+                                    "statusCode": 0,
+                                    "statusDescription": "OK",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "streetNumbers": null,
+                                    "statusCode": 90,
+                                    "statusDescription": "El largo de la numeración excede lo permitido",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "milliseconds": 0,
+                                    "statusCode": 0,
+                                    "statusDescription": "string",
+                                    "errors": [
+                                        "string"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AddressToSearchRequestDTO": {
+                "type": "object",
+                "properties": {
+                    "streetName": {
+                        "type": "string"
+                    },
+                    "countyName": {
+                        "type": "string"
+                    },
+                    "number": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DefinitionRequestStreet": {
+                "required": [
+                    "countyName",
+                    "streetName"
+                ],
+                "type": "object",
+                "properties": {
+                    "countyName": {
+                        "type": "string",
+                        "description": "Nombre de la comuna",
+                        "format": "string(100)"
+                    },
+                    "streetName": {
+                        "type": "string",
+                        "description": "Nombre de la calle a buscar, puede ser parcial y de largo mínimo 3 caracteres.",
+                        "format": "string(100)"
+                    },
+                    "pointsOfInterestEnabled": {
+                        "type": "boolean",
+                        "description": "Habilita la opción de mostrar dentro de los resultados puntos de interés como metros, museos, etc"
+                    },
+                    "streetNameEnabled": {
+                        "type": "boolean",
+                        "description": "Habilita la opción de buscar cualquier calle que contenga las palabras ingresadas."
+                    },
+                    "roadType": {
+                        "type": "integer",
+                        "description": "Habilita la opción de buscar por el código del tipo de vía como avenida, pasaje, etc.",
+                        "format": "int32"
+                    }
+                },
+                "example": "{\n  \"countyName\" : \"SANTIAGO CENTRO\",\n  \"streetName\" : \"DOCTOR ALLENDE PADIN\",\n  \"pointsOfInterestEnabled\" : true,\n  \"streetNameEnabled\" : true,\n  \"roadType\" : 0\n}"
+            },
+            "DefinitionResponseStreet": {
+                "type": "object",
+                "properties": {
+                    "streets": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "streetId",
+                                "streetName",
+                                "countyName",
+                                "roadType"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "streetId": {
+                                    "type": "integer"
+                                },
+                                "streetName": {
+                                    "type": "string"
+                                },
+                                "countyName": {
+                                    "type": "string"
+                                },
+                                "roadType": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "statusCode": {
+                        "type": "integer"
+                    },
+                    "statusDescription": {
+                        "type": "string"
+                    },
+                    "errors": {}
+                },
+                "example": {
+                    "streets": [
+                        {
+                            "streetId": 45473,
+                            "streetName": "DOCTOR ALLENDE PADIN",
+                            "countyName": "SANTIAGO CENTRO",
+                            "roadType": "CALLE"
+                        }
+                    ],
+                    "statusCode": 0,
+                    "statusDescription": "Exito",
+                    "errors": null
+                }
+            },
+            "DefinitionResponseCoverageArea": {
+                "required": [
+                    "countyCode",
+                    "countyName",
+                    "regionCode",
+                    "ineCountyCode",
+                    "queryMode",
+                    "coverageName"
+                ],
+                "type": "object",
+                "properties": {
+                    "countyCode": {
+                        "type": "string",
+                        "description": "Código de la comuna a la cual pertenece la cobertura"
+                    },
+                    "countyName": {
+                        "type": "string",
+                        "description": "Nombre de la comuna a la cual pertenece la cobertura"
+                    },
+                    "regionCode": {
+                        "type": "string",
+                        "description": "Código de la región"
+                    },
+                    "ineCountyCode": {
+                        "type": "integer",
+                        "description": "Código de comuna INE"
+                    },
+                    "queryMode": {
+                        "type": "integer",
+                        "description": "Tipo de búsqueda de cobertura"
+                    },
+                    "coverageName": {
+                        "type": "string",
+                        "description": "Nombre de la cobertura"
+                    }
+                },
+                "example": {
+                    "coverageAreas": [
+                        {
+                            "countyCode": "BULN",
+                            "countyName": "BULNES",
+                            "regionCode": "R16",
+                            "ineCountyCode": 425,
+                            "queryMode": 1,
+                            "coverageName": "BULNES"
+                        }
+                    ],
+                    "statusCode": 0,
+                    "statusDescription": "Extraccion exitosa",
+                    "errors": null
+                }
+            },
+            "DefinitionResponseStreetNumbers": {
+                "required": [
+                    "number",
+                    "latitude",
+                    "longitude",
+                    "addressId"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "integer",
+                        "description": "Numeración de la calle"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "description": "Latitud"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "description": "Longitud"
+                    },
+                    "addressId": {
+                        "type": "integer",
+                        "description": "Código de la calle a la cual pertenece la numeración"
+                    }
+                }
+            },
+            "DefinitionResponseRegions": {
+                "required": [
+                    "regionId",
+                    "regionName",
+                    "ineRegionCode"
+                ],
+                "type": "object",
+                "properties": {
+                    "regionId": {
+                        "type": "string",
+                        "description": "Código de región"
+                    },
+                    "regionName": {
+                        "type": "string",
+                        "description": "Nombre de región"
+                    },
+                    "ineRegionCode": {
+                        "type": "integer",
+                        "description": "Código numero de la región"
+                    }
+                }
+            },
+            "DefinitionRequestGeoreference": {
+                "required": [
+                    "countyName",
+                    "streetName",
+                    "number"
+                ],
+                "type": "object",
+                "properties": {
+                    "countyName": {
+                        "type": "string",
+                        "description": "Nombre de la comuna"
+                    },
+                    "streetName": {
+                        "type": "string",
+                        "description": "Nombre de la calle"
+                    },
+                    "number": {
+                        "type": "string",
+                        "description": "Numeración de la calle"
+                    }
+                }
+            },
+            "DefinitionResponseGeoreference": {
+                "required": [
+                    "addressId",
+                    "latitude",
+                    "longitude"
+                ],
+                "type": "object",
+                "properties": {
+                    "addressId": {
+                        "type": "integer",
+                        "description": "Código de la dirección"
+                    },
+                    "latitude": {
+                        "type": "string",
+                        "description": "Latitud"
+                    },
+                    "longitude": {
+                        "type": "string",
+                        "description": "Longitud"
+                    }
+                }
+            },
+            "DefinitionResponseNearbyOffice": {
+                "required": [
+                    "distance",
+                    "office"
+                ],
+                "type": "object",
+                "properties": {
+                    "distance": {
+                        "type": "string",
+                        "description": "Distancia de la dirección ingresada a la oficina"
+                    },
+                    "office": {
+                        "type": "object",
+                        "properties": {
+                            "regionName": {
+                                "type": "string",
+                                "description": "Nombre de la región"
+                            },
+                            "countyName": {
+                                "type": "string",
+                                "description": "Nombre de la comuna"
+                            },
+                            "officeName": {
+                                "type": "string",
+                                "description": "Nombre de la oficina"
+                            },
+                            "officeType": {
+                                "type": "integer",
+                                "description": "Código del tipo de oficina"
+                            },
+                            "streetName": {
+                                "type": "string",
+                                "description": "Nombre de la calle"
+                            },
+                            "streetNumber": {
+                                "type": "integer",
+                                "description": "Numeración de la calle"
+                            },
+                            "complement": {
+                                "type": "string",
+                                "description": "Información complementaria de la dirección"
+                            },
+                            "addressId": {
+                                "type": "integer",
+                                "description": "Codigo de la dirección"
+                            },
+                            "latitude": {
+                                "type": "string",
+                                "description": "Latitud"
+                            },
+                            "longitude": {
+                                "type": "string",
+                                "description": "Logitud"
+                            },
+                            "streetNameId": {
+                                "type": "integer",
+                                "description": "Código de la calle"
+                            },
+                            "ineCountyId": {
+                                "type": "integer",
+                                "description": "Código INE de la comuna"
+                            },
+                            "managerName": {
+                                "type": "string",
+                                "description": "Nombre del responsable de la oficina"
+                            },
+                            "telephone": {
+                                "type": "string",
+                                "description": "Número telefónico de la oficina"
+                            },
+                            "businessHour": {
+                                "type": "array",
+                                "items": {
+                                    "required": [
+                                        "day",
+                                        "initialStartHour",
+                                        "initialEndHour",
+                                        "finalStartHour",
+                                        "finalEndHour"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "day": {
+                                            "type": "string"
+                                        },
+                                        "initialStartHour": {
+                                            "type": "string"
+                                        },
+                                        "initialEndHour": {
+                                            "type": "string"
+                                        },
+                                        "finalStartHour": {
+                                            "type": "string"
+                                        },
+                                        "finalEndHour": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "description": "Horarios de antención por día"
+                            },
+                            "officeServices": {
+                                "type": "array",
+                                "items": {
+                                    "required": [
+                                        "serviceDescription",
+                                        "serviceTypeCode",
+                                        "serviceStatusCode"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "serviceDescription": {
+                                            "type": "string"
+                                        },
+                                        "serviceTypeCode": {
+                                            "type": "integer"
+                                        },
+                                        "serviceStatusCode": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "description": "Servicios entregados por la oficina"
+                            },
+                            "officeCode": {
+                                "type": "integer",
+                                "description": "Código de la oficina"
+                            },
+                            "regionCode": {
+                                "type": "string",
+                                "description": "Código de la región"
+                            },
+                            "eMail": {
+                                "type": "string",
+                                "description": "Email de contacto de la oficina"
+                            }
+                        }
+                    }
+                }
+            },
+            "DefinitionResponseOffice": {
+                "required": [
+                    "distance",
+                    "office"
+                ],
+                "type": "object",
+                "properties": {
+                    "office": {
+                        "type": "object",
+                        "properties": {
+                            "regionName": {
+                                "type": "string",
+                                "description": "Nombre de la región"
+                            },
+                            "countyName": {
+                                "type": "string",
+                                "description": "Nombre de la comuna"
+                            },
+                            "officeName": {
+                                "type": "string",
+                                "description": "Nombre de la oficina"
+                            },
+                            "officeType": {
+                                "type": "integer",
+                                "description": "Código del tipo de oficina"
+                            },
+                            "streetName": {
+                                "type": "string",
+                                "description": "Nombre de la calle"
+                            },
+                            "streetNumber": {
+                                "type": "integer",
+                                "description": "Numeración de la calle"
+                            },
+                            "complement": {
+                                "type": "string",
+                                "description": "Información complementaria de la dirección"
+                            },
+                            "addressId": {
+                                "type": "integer",
+                                "description": "Codigo de la dirección"
+                            },
+                            "latitude": {
+                                "type": "string",
+                                "description": "Latitud"
+                            },
+                            "longitude": {
+                                "type": "string",
+                                "description": "Logitud"
+                            },
+                            "streetNameId": {
+                                "type": "integer",
+                                "description": "Código de la calle"
+                            },
+                            "ineCountyId": {
+                                "type": "integer",
+                                "description": "Código INE de la comuna"
+                            },
+                            "managerName": {
+                                "type": "string",
+                                "description": "Nombre del responsable de la oficina"
+                            },
+                            "telephone": {
+                                "type": "string",
+                                "description": "Número telefónico de la oficina"
+                            },
+                            "businessHour": {
+                                "type": "array",
+                                "items": {
+                                    "required": [
+                                        "day",
+                                        "initialStartHour",
+                                        "initialEndHour",
+                                        "finalStartHour",
+                                        "finalEndHour"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "day": {
+                                            "type": "string"
+                                        },
+                                        "initialStartHour": {
+                                            "type": "string"
+                                        },
+                                        "initialEndHour": {
+                                            "type": "string"
+                                        },
+                                        "finalStartHour": {
+                                            "type": "string"
+                                        },
+                                        "finalEndHour": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "description": "Horarios de antención por día"
+                            },
+                            "officeServices": {
+                                "type": "array",
+                                "items": {
+                                    "required": [
+                                        "serviceDescription",
+                                        "serviceTypeCode",
+                                        "serviceStatusCode"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "serviceDescription": {
+                                            "type": "string"
+                                        },
+                                        "serviceTypeCode": {
+                                            "type": "integer"
+                                        },
+                                        "serviceStatusCode": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "description": "Servicios entregados por la oficina"
+                            },
+                            "officeCode": {
+                                "type": "integer",
+                                "description": "Código de la oficina"
+                            },
+                            "regionCode": {
+                                "type": "string",
+                                "description": "Código de la región"
+                            },
+                            "eMail": {
+                                "type": "string",
+                                "description": "Email de contacto de la oficina"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "offices": [
+                        {
+                            "regionName": "MAGALLANES Y LA ANTARTICA CHILENA",
+                            "countyName": "PUNTA ARENAS",
+                            "officeName": "PUNTA ARENAS ESPANA",
+                            "officeType": 3,
+                            "streetName": "AVENIDA ESPANA",
+                            "streetNumber": 1375,
+                            "complement": "AVENIDA ESPANA  1375  LOC 10",
+                            "addressId": 9157214,
+                            "latitude": "-53.13880000",
+                            "longitude": "-70.89053000",
+                            "streetNameId": 41118,
+                            "ineCountyId": 590,
+                            "managerName": "ELIZABETH INOSTROZA",
+                            "telephone": "61 2233308",
+                            "businessHour": [
+                                {
+                                    "day": "Lunes",
+                                    "initialStartHour": "2020-11-30T09:00:00.0000000+00:00",
+                                    "initialEndHour": "2020-11-30T13:00:00.0000000+00:00",
+                                    "finalStartHour": "2020-11-30T15:00:00.0000000+00:00",
+                                    "finalEndHour": "2020-11-30T19:00:00.0000000+00:00"
+                                }
+                            ],
+                            "officeServices": [
+                                {
+                                    "serviceDescription": "EnviosEntrega",
+                                    "serviceTypeCode": 1,
+                                    "serviceStatusCode": 1
+                                }
+                            ],
+                            "officeCode": 653,
+                            "regionCode": "R12",
+                            "eMail": ""
+                        }
+                    ],
+                    "statusCode": 0,
+                    "statusDescription": "Registro Exitoso",
+                    "errors": null
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

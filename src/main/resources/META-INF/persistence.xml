@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="cl.senordelosdiscos_SenorDisco_war_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>Clases.Distribuidor</class>
+    <class>Clases.FamiliaProducto</class>
+    <class>Clases.Imagen</class>
+    <class>Clases.DetalleVenta</class>
+    <class>Clases.Bulto</class>
+    <class>Clases.Comuna</class>
+    <class>Clases.DetallePedido</class>
+    <class>Clases.Persona</class>
+    <class>Clases.Factura</class>
+    <class>Clases.Producto</class>
+    <class>Clases.Boleta</class>
+    <class>Clases.Grupo</class>
+    <class>Clases.DocumentoTributario</class>
+    <class>Clases.Cliente</class>
+    <class>Clases.Venta</class>
+    <class>Clases.Usuario</class>
+    <class>Clases.Fabricante</class>
+    <class>Clases.Empleado</class>
+    <class>Clases.Pedido</class>
+    <class>Clases.Cargo</class>
+    <class>Clases.Destinatario</class>
+    <class>Clases.Despacho</class>
+    <class>Clases.Region</class>
+    <class>Clases.Marca</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://162.214.190.250:3306/senor?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="remote"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="asu2qwp."/>
+    </properties>
+  </persistence-unit>
+</persistence>
