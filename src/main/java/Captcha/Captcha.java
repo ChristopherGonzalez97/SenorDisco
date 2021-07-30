@@ -25,7 +25,7 @@ public class Captcha {
         //Online 
         public static final String secret = "";
 	//Local 
-        //public static final String secret = "6LcHfrMaAAAAANETpBt3otrsbepzcuFPB1II8_AM";
+        //public static final String secret = "";
 	private final static String USER_AGENT = "Mozilla/5.0";
 
 	public static boolean verify(String gRecaptchaResponse) throws IOException {
